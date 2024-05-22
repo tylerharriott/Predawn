@@ -1,24 +1,35 @@
 // src/pages/daily-song.js
 import { Box, Text, VStack, Flex, Button, Image } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import FooterNote from '../components/FooterNote';
 
 function DailySong() {
   const [song, setSong] = useState(null);
 
   useEffect(() => {
-    fetch('/api/new-release')  // Assuming 'new-release' is your API route
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.items && data.items.length > 0) {
-            setSong({
-              ...data.items[0],
-              release_date: new Date(data.items[0].release_date).toLocaleDateString('en-US', {
-                year: 'numeric', month: 'long', day: 'numeric'
-              })  // Formatting the release date
-            });  // Assuming the song data is in 'items[0]'
+    async function fetchSong() {
+      try {
+        const response = await fetch('/api/new-release');  // Assuming 'new-release' gives up to 7 new albums
+        const data = await response.json();
+        if (data && data.items) {
+          const dayOfWeek = new Date().getDay();  // Sunday - 0, Monday - 1, ..., Saturday - 6
+          // Check if there are at least 7 albums, if not, use the first album
+          const selectedSong = data.items.length >= 7 ? data.items[dayOfWeek] : data.items[0];
+          // Format the release date to be more human-readable
+          selectedSong.release_date = new Date(selectedSong.release_date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          setSong(selectedSong);
         }
-      })
-      .catch(error => console.error('Failed to fetch song:', error));
+      } catch (error) {
+        console.error('Failed to fetch song:', error);
+        // Optionally handle the error by displaying a default message or image
+      }
+    }
+
+    fetchSong();
   }, []);
 
   return (
@@ -50,7 +61,7 @@ function DailySong() {
           <VStack spacing={4} align="flex-start" maxWidth={{ md: "650px" }}>
             <Text fontSize="2xl" fontWeight="bold">{song.name}</Text>
             <Text fontSize="lg">{song.artists.map(artist => artist.name).join(', ')}</Text>
-            <Text fontSize="md">Release Date: {song.release_date}</Text>
+            <Text fontSize="md">Release Date: {song.release_date}</Text>  // Formatted date
             <Text fontSize="md">Total Tracks: {song.total_tracks}</Text>
             <Button colorScheme="orange" as="a" href={song.external_urls.spotify} target="_blank">
               Listen on Spotify
@@ -60,6 +71,7 @@ function DailySong() {
       ) : (
         <Text fontSize="xl" fontWeight="bold">Loading song...</Text>
       )}
+      <FooterNote />
     </Box>
   );
 }

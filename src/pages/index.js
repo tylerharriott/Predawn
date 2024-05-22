@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
+import FooterNote from '../components/FooterNote'; 
 
 function Home() {
   const router = useRouter();
@@ -30,6 +31,7 @@ function Home() {
           Get a daily song
         </Button>
       </VStack>
+      <FooterNote />
     </Box>
   );
 }
