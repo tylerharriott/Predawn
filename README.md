@@ -17,3 +17,31 @@
 Before you get started, ensure you have the following installed:
 - Node.js
 - npm (Node Package Manager)
+
+## Setup and Installation
+To set up the project locally, follow these steps:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/predawn.git
+   cd predawn
+
+2. **Install the dependencies**
+   ```bash
+   npm install
+  
+
+3. **Set up environment variables**
+   ```bash
+    SPOTIFY_CLIENT_ID=your_spotify_client_id
+    SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+
+4. **Run the development server**
+   ```bash
+    npm run dev
+
+
+## Acknowledgments
+Special thanks to the following repository which helped in the development of this application:
+
+[Spotify Web API Node](https://github.com/thelinmichael/spotify-web-api-node)

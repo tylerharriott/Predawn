@@ -9,13 +9,11 @@ function DailySong() {
   useEffect(() => {
     async function fetchSong() {
       try {
-        const response = await fetch('/api/new-release');  // Assuming 'new-release' gives up to 7 new albums
+        const response = await fetch('/api/new-release'); 
         const data = await response.json();
         if (data && data.items) {
           const dayOfWeek = new Date().getDay();  // Sunday - 0, Monday - 1, ..., Saturday - 6
-          // Check if there are at least 7 albums, if not, use the first album
           const selectedSong = data.items.length >= 7 ? data.items[dayOfWeek] : data.items[0];
-          // Format the release date to be more human-readable
           selectedSong.release_date = new Date(selectedSong.release_date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
@@ -25,7 +23,6 @@ function DailySong() {
         }
       } catch (error) {
         console.error('Failed to fetch song:', error);
-        // Optionally handle the error by displaying a default message or image
       }
     }
 
