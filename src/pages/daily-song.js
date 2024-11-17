@@ -9,28 +9,17 @@ function DailySong() {
   useEffect(() => {
     async function fetchSong() {
       try {
-        const response = await fetch('/api/playlist-songs'); // New endpoint
+        const response = await fetch('/api/new-release'); 
         const data = await response.json();
         if (data && data.items) {
-          const dayOfWeek = new Date().getDay(); // Pick a song based on the day of the week
-          const track = data.items[dayOfWeek % data.items.length].track;
-
-          const formattedSong = {
-            name: track.name,
-            artists: track.artists.map(artist => artist.name).join(', '),
-            release_date: track.album.release_date
-              ? new Date(track.album.release_date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })
-              : 'N/A',
-            duration: track.duration_ms / 60000, // Convert ms to minutes as a float
-            image: track.album.images[0]?.url || '',
-            spotify_url: track.external_urls.spotify,
-          };
-
-          setSong(formattedSong);
+          const dayOfWeek = new Date().getDay();  // Sunday - 0, Monday - 1, ..., Saturday - 6
+          const selectedSong = data.items.length >= 7 ? data.items[dayOfWeek] : data.items[0];
+          selectedSong.release_date = new Date(selectedSong.release_date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          setSong(selectedSong);
         }
       } catch (error) {
         console.error('Failed to fetch song:', error);
